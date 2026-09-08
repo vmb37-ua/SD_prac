@@ -12,16 +12,18 @@ main (int argc, char *argv[])
 {
 	char *servidor_ip;
 	char *servidor_puerto;
-	char *mensaje, respuesta[1024];
+	char *color;
+	char *importe;
+	char respuesta[1024];
 	struct sockaddr_in direccion;
 	int s;
 	int n, enviados, recibidos;
 
 	/* Comprobar los argumentos */
-	if (argc !=  4)
+	if (argc !=  5)
 	{
-		fprintf(stderr, "Error. Debe indicar la direccion del servidor (IP y Puerto) y el mensaje a enviar\r\n");
-		fprintf(stderr, "Sintaxis: %s <ip> <puerto> <mensaje>\n\r", argv[0]);
+		fprintf(stderr, "Error. Debe indicar la direccion del servidor (IP y Puerto), el color elegido y el importe a apostar\r\n");
+		fprintf(stderr, "Sintaxis: %s <ip> <puerto> <color>[R, N, V] <importe>\n\r", argv[0]);
 		fprintf(stderr, "Ejemplo : %s 192.168.6.7 8574 \"Esto es un mensaje\"\n\r", argv[0]);
 		return 1;
 	}
@@ -29,9 +31,14 @@ main (int argc, char *argv[])
 	/* Tomar los argumentos */		
 	servidor_ip = argv[1];
 	servidor_puerto = argv[2];
-	mensaje = argv[3];
+	color = argv[3];
+	importe = argv[4];
 
-	printf("\n\rEnviar mensaje \"%s\" a %s:%s...\n\r\n\r", mensaje, servidor_ip, servidor_puerto);
+	if(color != 'R' || color != 'V' || color != 'N'){
+		return 1;
+	}
+
+	printf("\n\rEnviar apuesta \"%s\" a %s:%s...\n\r\n\r", color, importe, servidor_ip, servidor_puerto);
 
 	/**** Paso 1: Abrir el socket ****/
 
@@ -45,7 +52,7 @@ main (int argc, char *argv[])
 
 	/**** Paso 2: Conectar al servidor ****/		
 
-	/* Cargar la dirección */
+	/* Cargar la direcciï¿½n */
 	direccion.sin_family = AF_INET; /* socket familia INET */
 	direccion.sin_addr.s_addr = inet_addr(servidor_ip);
 	direccion.sin_port = htons(atoi(servidor_puerto));
@@ -56,7 +63,7 @@ main (int argc, char *argv[])
 		close(s);
 		return 1;
 	}
-	printf("Conexión establecida\n\r");
+	printf("Conexiï¿½n establecida\n\r");
 
 	/**** Paso 3: Enviar mensaje ****/
 
@@ -86,7 +93,7 @@ main (int argc, char *argv[])
 
 	/**** Paso 5: Cerrar el socket ****/
 	close(s);
-	printf("Socket cerrado. Comunicación finalizada\n\r");
+	printf("Socket cerrado. Comunicaciï¿½n finalizada\n\r");
 
 	return 0;
 }
