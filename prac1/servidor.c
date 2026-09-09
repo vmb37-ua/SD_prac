@@ -12,7 +12,7 @@ int s; /* socket */
 void
 finalizar (int senyal)
 {
-	printf("Recibida la señal de fin (cntr-C)\n\r");
+	printf("Recibida la seï¿½al de fin (cntr-C)\n\r");
 	close(s); /* cerrar para que accept termine con un error y salir del bucle principal */
 }
 
@@ -20,13 +20,15 @@ int
 main (int argc, char *argv[])
 {
 	char *servidor_puerto;
-	char mensaje[1024], respuesta[]="Gracias por tu mensaje";
+	char color;
+	long importe;
 	struct sockaddr_in dir_servidor, dir_cliente;
 	unsigned int long_dir_cliente;
 	int s2;
 	int n, enviados, recibidos;
 	int proceso;
 	int contador=0;
+	char respuesta[1024];
 
 	/* Comprobar los argumentos */
 	if (argc != 2)
@@ -50,7 +52,7 @@ main (int argc, char *argv[])
 	}
 	printf("Socket abierto\n\r");
 
-	/**** Paso 2: Establecer la dirección (puerto) de escucha ****/
+	/**** Paso 2: Establecer la direcciï¿½n (puerto) de escucha ****/
 
 	dir_servidor.sin_family = AF_INET;
 	dir_servidor.sin_port = htons(atoi(servidor_puerto));
@@ -79,7 +81,7 @@ main (int argc, char *argv[])
 
 	while (1)
 	{
-		fprintf(stderr, "Esperando conexión en el puerto %s...\n\r", servidor_puerto);
+		fprintf(stderr, "Esperando conexiï¿½n en el puerto %s...\n\r", servidor_puerto);
 		long_dir_cliente = sizeof (dir_cliente);
 		s2 = accept (s, (struct sockaddr *)&dir_cliente, &long_dir_cliente);
 		contador++;
@@ -98,16 +100,35 @@ main (int argc, char *argv[])
 
 			/**** Paso 5: Leer el mensaje ****/
 
-			n = sizeof(mensaje);
-			recibidos = read(s2, mensaje, n);
+			n = sizeof(color);
+			recibidos = read(s2, &(color), n);
 			if (recibidos == -1)
 			{
-				fprintf(stderr, "Error leyendo el mensaje\n\r");
+				fprintf(stderr, "Error leyendo el color\n\r");
 				exit(1);
 			}
-			mensaje[recibidos] = '\0'; /* pongo el final de cadena */
-			printf("Mensaje recibido [%d]: %s\n\r", recibidos, mensaje);
+			printf("Color recibido: %c\n", color);
 
+			n = sizeof(importe);
+			recibidos = read(s2, &(color), n);
+			if (recibidos == -1)
+			{
+				fprintf(stderr, "Error leyendo el importe\n\r");
+				exit(1);
+			}
+			printf("Importe recibido: %d\n", color);
+
+			// TODA LA LOGICA DE LA RULETA 
+			// Comprobacion de importe correcto
+			// Tengo que poner la respuesta asÃ­ como el \0
+			
+			//TODO tengo que investigar las cuotas de la ruleta
+			srandom(20);
+			float rand = random()%30;
+			if(rand == 0){
+				importe*=2;
+			}
+			if(rand == )
 
 			/**** Paso 6: Enviar respuesta ****/
 
@@ -128,7 +149,7 @@ main (int argc, char *argv[])
 		}
 		else /* soy el padre */
 		{
-			close(s2); /* el padre no usa esta conexión */
+			close(s2); /* el padre no usa esta conexiï¿½n */
 		}
 
 	}
